@@ -1,0 +1,4 @@
+webpyadmin
+==========
+
+djangoadmin for webpy
