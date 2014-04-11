@@ -1,0 +1,83 @@
+#!/bin/bash
+
+PROFILES="
+urls.py
+settings.py
+app.py
+views.py
+"
+
+APPFILES="
+urls.py
+views.py
+models.py
+"
+
+DIRS="
+templates
+static
+"
+
+already_startproject=".project"
+bname=`basename $0`
+bdir=`dirname $0`
+CONF_TEMPLATE_DIR=$bdir/config_templates
+
+function init_project() {
+    local CWD=$1
+    for d in $DIRS; do
+        [ ! -d $CWD/$d ] && mkdir $CWD/$d && touch $CWD/$d/__init__.py
+    done
+    for t in $PROFILES; do
+        [ ! -f $CWD/$t ] && cat $CONF_TEMPLATE_DIR/${t%%.*}.template > $CWD/$t 
+    done    
+    touch $CWD/$already_startproject
+}
+
+
+function init_app() {
+    local CWD=$1
+    for t in $APPFILES; do
+        [ ! -f $CWD/$t ] && cat $CONF_TEMPLATE_DIR/${t%%.*}.template > $CWD/$t 
+    done
+}
+
+
+function startproject() {
+    local proname=$1
+    [ ! -d $proname ] && mkdir $proname && cd $proname
+    local CWD=`pwd`
+    [ ! -f $CWD/$already_startproject ] && init_project $CWD || exit 0
+}
+
+
+function startapp() {
+    [ ! -f $already_startproject ] && echo "create project at first" && exit 0
+    local CWD=`pwd`
+    local appname=$1
+    local appdir=$CWD/apps
+    [ ! -d $CWD/apps/$appname ] && mkdir -p $CWD/apps/$appname || exit 0
+    init_app $appdir/$appname
+}
+
+
+function usage() {
+    echo " 
+$bname [startproject|startapp|help]:
+startproject project_name   create a new project_name
+startapp     appname        create a new application
+help                        see the usage
+"
+}
+
+OPT="$1"
+case $OPT in
+    startproject )
+        startproject $2;;
+    startapp )
+        startapp $2;;
+    help )
+        usage;;
+    * )
+        echo "type $bname help";;
+esac

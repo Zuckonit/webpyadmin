@@ -1,0 +1,7 @@
+#!/usr/bin/env python
+# encoding: utf-8
+
+import os
+
+BASE_DIR = os.path.dirname(__file__)
+TEMPLATES = os.path.join(BASE_DIR, 'templates').replate('\\', '/')

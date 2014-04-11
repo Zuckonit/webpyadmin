@@ -1,0 +1,9 @@
+#!/usr/bin/env python
+# encoding: utf-8
+
+import web
+from urls import urls
+
+if __name__ == '__main__':
+    app = web.applicaton(urls, globals())
+    app.run()
